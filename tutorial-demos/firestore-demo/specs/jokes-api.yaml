@@ -1,0 +1,159 @@
+# Example OpenAPI YAML to get you started quickly.
+# Note: YAML has indentation based coping.
+# Code completion support is available so start typing for
+# available options.
+# This example follows the recommendations of the API 
+# Improvement Proposals for common API patterns. Find more
+# at https://google.aip.dev/
+
+# Find the full OpenAPI reference at:
+# https://github.com/OAI/OpenAPI-Specification
+openapi: 3.0.3
+
+# This is your document metadata.
+info:
+  version: 0.0.1
+  title: Joke API
+  description: API to get and maintain the best, and worst, jokes on the planet
+# Servers where this API is hosted
+servers: 
+  - url: https://emea-poc13-prod.apigee.net/importantstuff
+
+security:
+  - ApiKeyAuth: []
+  
+# Describe your paths here
+paths:
+  '/jokes':
+    get:
+      summary: 'Get all joke data.'
+      description: 'Get all joke data.'
+      responses:
+        # Response code
+        '200':
+          description: Successful response
+          # Response body content.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfJokes'  
+    post:
+      summary: 'Creates a new Joke configuration'
+      description: 'Creates a new Joke configuration'
+      requestBody:
+        description: 'Joke object'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Joke'            
+      responses:
+        '201':
+          description: item created    
+  '/jokes/{id}':
+    # This is an HTTP operation
+    get:
+      summary: 'Get the joke data.'
+      description: 'Get the joke data'
+      parameters:
+        # An example parameter that is in query and is required
+        - name: id
+          in: path
+          description: |
+            Unique identifier of the desired joke object.
+          required: true
+          schema:
+            type: string
+      responses:
+        # Response code
+        '200':
+          description: Successful response
+          # Response body content.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Joke'
+    put:
+      summary: 'Updates a Joke configuration'
+      description: 'Updates a Joke configuration'
+      parameters:
+        # An example parameter that is in query and is required
+        - name: id
+          in: path
+          description: |
+            Unique identifier of the desired joke object.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 'joke object'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Joke'            
+      responses:
+        '201':
+          description: item updated     
+    delete:
+      summary: 'Deletes a Joke configuration'
+      description: 'Deletes a Joke configuration'
+      parameters:
+        # An example parameter that is in query and is required
+        - name: id
+          in: path
+          description: |
+            Unique identifier of the desired joke object.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: success           
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-apikey
+  # Schemas is a map of names to Schema objects
+  schemas:
+    Joke:
+      title: Joke
+      type: object
+      properties:
+        id:
+          description: |
+            [Resource Name](https://aip.dev/122) of a joke.
+            Format: `meters/{meterid}`
+          type: string
+        text:
+          description: 'Text of a joke.'
+          type: string
+        punchline:
+          description: 'Punchline of a joke.'
+          type: string
+        location:
+          description: 'The location of the joke'
+          type: string
+          example: "52.517568, 10.959388"     
+        timestamp:
+          description: "The timestamp of the moment of inspiration for the joke"
+          format: date-time
+          type: string
+        funny:
+          description: "The scientific measurement if the joke is funny."
+          type: boolean
+        imagePath:
+          description: "An image that gives the joke away"
+          type: string
+    ArrayOfJokes:
+      title: ArrayOfJokes
+      type: object
+      properties:
+        jokes:
+          description: array of jokes
+          type: array
+          items: 
+            $ref: '#/components/schemas/Joke'          
+
